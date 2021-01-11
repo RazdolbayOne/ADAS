@@ -20,8 +20,6 @@ INPUT_FIELD_COUNT=5
 
 class Test():
     def __init__(self):
-        self.widget_list_of_create_frame = []
-        self.widget_list_of_accept_frame = []
         self.root = tk.Tk()
         self.root.geometry("800x400")
         self.root.title("ADAS")
@@ -58,6 +56,11 @@ class Test():
         #root Frame
         self.root_accept_frame = tk.Frame(self.root)
         self.root_accept_frame.pack()
+
+        #frame for treewiev
+        self.af_treeview_frame=tk.Frame(self.root_accept_frame)
+        #self.af_treeview_frame.pack()
+        self.create_place_treeview()
         """
         # create frame stuff
         self.place_create_frame_labels()
@@ -116,53 +119,41 @@ class Test():
         self.adress_label = tk.Label(self.cf_input_frames[0], text="ADRESE(STRING)", borderwidth=3, relief="sunken", width=40,
                                      height=2)
         self.adress_label.pack(side="left")
-        self.widget_list_of_create_frame.append(self.adress_label)
 
         self.adress_entry = tk.Entry(self.cf_input_frames[0], borderwidth=3, width=40)
         self.adress_entry.pack(side="left")
-        self.widget_list_of_create_frame.append(self.adress_entry)
 
         #date to do the object
         self.date_todo_label = tk.Label(self.cf_input_frames[1], text="KAD(YYYY-MM-DD)", borderwidth=3, relief="sunken", width=40,
                                         height=2)
         self.date_todo_label.pack(side="left")
-        self.widget_list_of_create_frame.append(self.date_todo_label)
 
         self.date_todo_entry = tk.Entry(self.cf_input_frames[1], borderwidth=3, width=40)
         self.date_todo_entry.pack(side="left")
-        self.widget_list_of_create_frame.append(self.date_todo_entry)
 
         #priority label
         self.priority_label = tk.Label(self.cf_input_frames[2], text="Pioritate(NUMBER)", borderwidth=3, relief="sunken", width=40,
                                        height=2)
         self.priority_label.pack(side="left")
-        self.widget_list_of_create_frame.append(self.priority_label)
         
         self.priority_entry = tk.Entry(self.cf_input_frames[2], borderwidth=3, width=40)
         self.priority_entry.pack(side="left")
-        self.widget_list_of_create_frame.append(self.priority_entry)
         
         #brigade
         self.brigade_num_label = tk.Label(self.cf_input_frames[3], text="Brigade(NUMBER)", borderwidth=3, relief="sunken", width=40,
                                           height=2)
         self.brigade_num_label.pack(side="left")
-        self.widget_list_of_create_frame.append(self.brigade_num_label)
 
         self.brigade_num_entry = tk.Entry(self.cf_input_frames[3], borderwidth=3, width=40)
         self.brigade_num_entry.pack(side="left")
-        self.widget_list_of_create_frame.append(self.brigade_num_entry)
         
         #comentary 
         self.commentary_label = tk.Label(self.cf_input_frames[4], text="Komentars", borderwidth=3, relief="sunken",
                                          width=40, height=2)
         self.commentary_label.pack(side="left")
-        self.widget_list_of_create_frame.append(self.commentary_label)
 
         self.commentary_entry = tk.Entry(self.cf_input_frames[4], borderwidth=3, width=40)
         self.commentary_entry.pack(side="left")
-        self.widget_list_of_create_frame.append(self.commentary_entry)
-
-
 
     def place_cf_submit_btn(self):
         """places submit button"""
@@ -170,13 +161,11 @@ class Test():
                                     command=self.insert_entrys_data_into_db,
                                     width=40, height=2)
         self.submit_btn.pack(side="left")
-        self.widget_list_of_create_frame.append(self.submit_btn)
 
     def place_create_frame_response_lebel(self):
         self.cf_response_label = tk.Label(self.submit_btn_status_label, text="result msg", borderwidth=3,
                                           width=35, height=2)
         self.cf_response_label.pack(side="left")
-        self.widget_list_of_create_frame.append(self.cf_response_label)
 
     def place_accept_frame_response_lebel(self):
         self.af_response_label = tk.Label(self.root, text="result msg", borderwidth=3, relief="sunken",
@@ -240,6 +229,8 @@ class Test():
         # shows accept frame widgets
         self.root_accept_frame.pack()
 
+        # TODO NEED TO FIX THIS KASTIL
+        self.af_treeview_frame.pack()
         # changes collor
         self.btn_show_accept_frame.config(bg="blue")
         self.btn_show_create_frame.config(bg='white')
@@ -255,7 +246,6 @@ class Test():
         self.update_treeview_btn = tk.Button(self.root, text='UPDATE', command=self.update_treeview,
                                     width=40, height=5)
         self.update_treeview_btn.grid(column=2, row=2)
-        self.widget_list_of_accept_frame.append(self.update_treeview_btn)
 
      # SQL stuff
     def create_db_connection(self):
@@ -325,11 +315,11 @@ class Test():
 
     def create_place_treeview(self):
         """creates tk.TreeWiev object and insert into it data from db objects """
-        self.tree = ttk.Treeview(self.root, columns=('ADRESS', 'DATE', 'FINISH_DATE'))
+        self.tree = ttk.Treeview(self.af_treeview_frame, columns=('ADRESS', 'DATE', 'FINISH_DATE'))
 
         # Set the heading (Attribute Names)
         self.tree.heading('#0', text='BRIGADES NUM')
-        self.tree.heading('#1', text='ADRESE')
+        self.tree.heading('#1', text='ADDRESE')
         self.tree.heading('#2', text='DATE_TO_END')
         self.tree.heading('#3', text='FINISH_DATE')
 
@@ -339,12 +329,11 @@ class Test():
         self.tree.column('#2', stretch=tk.YES)
         self.tree.column('#3', stretch=tk.YES)
 
-        self.tree.grid(row=1, columnspan=2, sticky='nsew')
+        self.tree.grid(row=4, columnspan=4, sticky='nsew')
         self.treeview = self.tree
 
         self.iid = 0
         self.id = 0
-        self.widget_list_of_accept_frame.append(self.treeview)
 
         self.insert_data_into_treeview()
 
