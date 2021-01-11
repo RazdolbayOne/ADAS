@@ -26,7 +26,7 @@ class Test():
         self.root.title("ADAS")
 
         self.place_switch_buttons()
-        #create frame stuff
+        # create frame stuff
         self.place_create_frame_labels()
         self.place_create_frame_entrys()
         self.place_create_frame_submit_btn()
@@ -34,7 +34,8 @@ class Test():
         # accept frame stuff
         self.show_accept_frame_widgets()
         self.place_recordings_from_db()
-        #self.place_accept_frame_btn()
+
+        # self.place_accept_frame_btn()
 
     def quit(self):
         self.root.destroy()
@@ -53,9 +54,7 @@ class Test():
                                                width=50, height=5)
         self.btn_show_accept_frame.grid(column=1, row=0, sticky='nesw')
 
-
-
-    #All about create frame
+    # All about create frame
     def place_create_frame_labels(self):
         self.adress_label = tk.Label(self.root, text="ADRESE(STRING)", borderwidth=3, relief="sunken", width=40,
                                      height=2)
@@ -182,20 +181,23 @@ class Test():
 
     def place_recordings_from_db(self):
         # Set the treeview
-        self.tree = ttk.Treeview(self.root, columns=('Name', 'ID'))
+        self.tree = ttk.Treeview(self.root, columns=('ADRESS', 'DATE','FINISH_DATE'))
 
         # Set the heading (Attribute Names)
-        self.tree.heading('#0', text='Item')
-        self.tree.heading('#1', text='Name')
-        self.tree.heading('#2', text='ID')
+        self.tree.heading('#0', text='ADDRES')
+        self.tree.heading('#1', text='DATE')
+        self.tree.heading('#2', text='FINISH_DATE')
 
         # Specify attributes of the columns (We want to stretch it!)
         self.tree.column('#0', stretch=tk.YES)
         self.tree.column('#1', stretch=tk.YES)
         self.tree.column('#2', stretch=tk.YES)
 
-        self.tree.grid(row=4, columnspan=4, sticky='nsew')
+        self.tree.grid(row=1, columnspan=4, sticky='nsew')
         self.treeview = self.tree
+
+        self.id = 0
+        self.iid = 0
         self.widget_list_of_accept_frame.append(self.treeview)
 
     def place_accept_frame_btn(self):
@@ -203,8 +205,6 @@ class Test():
                                     width=40, height=5)
         self.accept_btn.grid(column=0, row=5)
         self.widget_list_of_accept_frame.append(self.accept_btn)
-
-
 
     # SQL stuff
     def create_db_connection(self):
