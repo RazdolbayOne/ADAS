@@ -16,6 +16,7 @@ DB_USER = "root"
 DB_PASSWORD = "My3qlP@ssword"
 DB_DATABASE = "mydb"
 
+INPUT_FIELD_COUNT=5
 
 class Test():
     def __init__(self):
@@ -30,10 +31,15 @@ class Test():
         self.switch_btn_frame.pack()
         self.place_switch_buttons()
         #frame what stores labels and entrys for object creation
-        self.obj_data_input_frame=tk.Frame(self.root)
-        self.obj_data_input_frame.pack()
+        self.main_obj_data_input_frame=tk.Frame(self.root)
+        self.main_obj_data_input_frame.pack()
+        #contains subframes of obj_data_input_frame
+        self.cf_input_frames=[]
+        for i in range(INPUT_FIELD_COUNT):
+            input_frame=tk.Frame(self.main_obj_data_input_frame)
+            input_frame.pack()
+            self.cf_input_frames.append(input_frame)
         self.create_cf_labels_and_entrys()
-
         """
         # create frame stuff
         self.place_create_frame_labels()
@@ -87,59 +93,56 @@ class Test():
 
     # All about create frame
     def create_cf_labels_and_entrys(self):
-        frame1=tk.Frame(self.obj_data_input_frame)
-        frame1.pack()
-        frame2 = tk.Frame(self.obj_data_input_frame)
-        frame2.pack()
+
         #adress label and entry
-        self.adress_label = tk.Label(frame1, text="ADRESE(STRING)", borderwidth=3, relief="sunken", width=40,
+        self.adress_label = tk.Label(self.cf_input_frames[0], text="ADRESE(STRING)", borderwidth=3, relief="sunken", width=40,
                                      height=2)
         self.adress_label.pack(side="left")
         self.widget_list_of_create_frame.append(self.adress_label)
 
-        self.adress_entry = tk.Entry(frame1, borderwidth=3, width=40)
+        self.adress_entry = tk.Entry(self.cf_input_frames[0], borderwidth=3, width=40)
         self.adress_entry.pack(side="left")
         self.widget_list_of_create_frame.append(self.adress_entry)
 
         #date to do the object
-        self.date_todo_label = tk.Label(frame2, text="KAD(YYYY-MM-DD)", borderwidth=3, relief="sunken", width=40,
+        self.date_todo_label = tk.Label(self.cf_input_frames[1], text="KAD(YYYY-MM-DD)", borderwidth=3, relief="sunken", width=40,
                                         height=2)
         self.date_todo_label.pack(side="left")
         self.widget_list_of_create_frame.append(self.date_todo_label)
 
-        self.date_todo_entry = tk.Entry(frame2, borderwidth=3, width=40)
+        self.date_todo_entry = tk.Entry(self.cf_input_frames[1], borderwidth=3, width=40)
         self.date_todo_entry.pack(side="left")
         self.widget_list_of_create_frame.append(self.date_todo_entry)
-        """
+
         #priority label
-        self.priority_label = tk.Label(self.obj_data_input_frame, text="Pioritate(NUMBER)", borderwidth=3, relief="sunken", width=40,
+        self.priority_label = tk.Label(self.cf_input_frames[2], text="Pioritate(NUMBER)", borderwidth=3, relief="sunken", width=40,
                                        height=2)
         self.priority_label.pack(side="left")
         self.widget_list_of_create_frame.append(self.priority_label)
         
-        self.priority_entry = tk.Entry(self.obj_data_input_frame, borderwidth=3, width=30)
+        self.priority_entry = tk.Entry(self.cf_input_frames[2], borderwidth=3, width=40)
         self.priority_entry.pack(side="left")
         self.widget_list_of_create_frame.append(self.priority_entry)
         
         #brigade
-        self.brigade_num_label = tk.Label(self.obj_data_input_frame, text="Brigade(NUMBER)", borderwidth=3, relief="sunken", width=40,
+        self.brigade_num_label = tk.Label(self.cf_input_frames[3], text="Brigade(NUMBER)", borderwidth=3, relief="sunken", width=40,
                                           height=2)
         self.brigade_num_label.pack(side="left")
         self.widget_list_of_create_frame.append(self.brigade_num_label)
 
-        self.brigade_num_entry = tk.Entry(self.obj_data_input_frame, borderwidth=3, width=30)
+        self.brigade_num_entry = tk.Entry(self.cf_input_frames[3], borderwidth=3, width=40)
         self.brigade_num_entry.pack(side="left")
         self.widget_list_of_create_frame.append(self.brigade_num_entry)
         
         #comentary 
-        self.commentary_label = tk.Label(self.obj_data_input_frame, text="Komentars", borderwidth=3, relief="sunken",
+        self.commentary_label = tk.Label(self.cf_input_frames[4], text="Komentars", borderwidth=3, relief="sunken",
                                          width=40, height=2)
         self.commentary_label.pack(side="left")
         self.widget_list_of_create_frame.append(self.commentary_label)
 
-        self.commentary_entry = tk.Entry(self.obj_data_input_frame, borderwidth=3, width=30)
+        self.commentary_entry = tk.Entry(self.cf_input_frames[4], borderwidth=3, width=40)
         self.commentary_entry.pack(side="left")
-        self.widget_list_of_create_frame.append(self.commentary_entry)"""
+        self.widget_list_of_create_frame.append(self.commentary_entry)
 
 
 
