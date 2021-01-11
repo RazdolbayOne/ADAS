@@ -22,7 +22,7 @@ class Test():
         self.widget_list_of_create_frame = []
         self.widget_list_of_accept_frame = []
         self.root = tk.Tk()
-        self.root.geometry("600x400")
+        self.root.geometry("800x400")
         self.root.title("ADAS")
 
         self.place_switch_buttons()
@@ -35,7 +35,7 @@ class Test():
         self.show_accept_frame_widgets()
         self.place_recordings_from_db()
 
-        # self.place_accept_frame_btn()
+        self.place_accept_frame_btn()
 
     def quit(self):
         self.root.destroy()
@@ -107,13 +107,13 @@ class Test():
 
     def place_create_frame_submit_btn(self):
         """places submit button"""
-        self.submit_btn = tk.Button(self.root, text='IERAKSTIT', command=self.insert_entrys_data_into_db,
+        self.submit_btn = tk.Button(self.root, text='IERAKSTIT',bg="green",relief="groove", command=self.insert_entrys_data_into_db,
                                     width=40, height=5)
         self.submit_btn.grid(column=0, row=7)
         self.widget_list_of_create_frame.append(self.submit_btn)
 
     def place_create_frame_response_lebel(self):
-        self.response_label = tk.Label(self.root, text="submit stub", borderwidth=3, relief="sunken",
+        self.response_label = tk.Label(self.root, text="result msg", borderwidth=3, relief="sunken",
                                        width=30, height=2)
         self.response_label.grid(column=1, row=7, padx=5, pady=5)
         self.widget_list_of_create_frame.append(self.response_label)
@@ -180,8 +180,8 @@ class Test():
         self.btn_show_create_frame.config(bg='white')
 
     def place_recordings_from_db(self):
-        # Set the treeview
-        self.tree = ttk.Treeview(self.root, columns=('ADRESS', 'DATE','FINISH_DATE'))
+        """creates tk.TreeWiev object and insert into it data from db objects """
+        self.tree = ttk.Treeview(self.root, columns=( 'DATE','FINISH_DATE'))
 
         # Set the heading (Attribute Names)
         self.tree.heading('#0', text='ADDRES')
@@ -193,18 +193,48 @@ class Test():
         self.tree.column('#1', stretch=tk.YES)
         self.tree.column('#2', stretch=tk.YES)
 
-        self.tree.grid(row=1, columnspan=4, sticky='nsew')
+        self.tree.grid(row=1, columnspan=2, sticky='nsew')
         self.treeview = self.tree
 
-        self.id = 0
         self.iid = 0
+        self.id = 0
         self.widget_list_of_accept_frame.append(self.treeview)
+
+        # get data from db
+        conn = self.create_db_connection()
+        q1 = "SELECT *FROM objekts;"
+        results = self.read_query(conn, q1)
+        # Returns a list of lists
+        from_db = []
+        for result in results:
+            result = list(result)
+            from_db.append(result)
+        for row in from_db:
+            # example of output row
+            # [6, 'aizdomu 34', datetime.date(2022, 11, 12), 2, 0, None, 0, None, 2]
+            #  0       1              2                       3 4   5    6   7    8
+
+            # row[6] higher then 0 means this row already was accepted
+            if row[6]==1:
+                continue
+            adress=row[1]
+            todo_date=row[2]
+            fin_date=row[5]
+            self.treeview.insert('', 'end', iid=self.iid,text=adress,
+                                 values=(str(todo_date),str(fin_date)))
+            self.iid = self.iid + 1
+            self.id = self.id + 1
+
 
     def place_accept_frame_btn(self):
         self.accept_btn = tk.Button(self.root, text='PIENEMT', command=self.accept_object,
                                     width=40, height=5)
-        self.accept_btn.grid(column=0, row=5)
+        self.accept_btn.grid(column=0, row=100)
         self.widget_list_of_accept_frame.append(self.accept_btn)
+
+    def clear_treeview(self):
+        for i in self.treeview.get_children():
+            self.treeview.delete(i)
 
     # SQL stuff
     def create_db_connection(self):
@@ -250,7 +280,12 @@ class Test():
         """deletes from Tree focused row also
         sends query to update focused row to change ACCEPTED to True
         """
-
+        row_id = int(self.tree.focus())
+        self.treeview.delete(row_id)
+        for line in self.tree.get_children():
+            print(line)
+            for value in self.tree.item(line)['values']:
+                print(value)
         print("Accepted")
 
     def update_obj_recordings(self):
