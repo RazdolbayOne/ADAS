@@ -149,7 +149,7 @@ class Test():
             priority = 3
 
         # bigade_label
-        brigade = int(self.bigade_entry.get())
+        brigade = self.bigade_entry.get()
         if type(brigade) == int:
             if brigade > 3 or brigade<0:
                 brigade = 1
@@ -162,7 +162,7 @@ class Test():
             comment = "NAV"
 
         insert_data_query += "('" + adress + "','" + str(self.then_entry.get()) + "'," + str(priority) + ",0,0," + str(
-            brigade) + ",'" + str(comment) + "'); "
+            brigade) + ",'" + comment + "'); "
         print(insert_data_query)
         self.execute_query(conn, insert_data_query)
 
