@@ -34,7 +34,11 @@ class Test():
         # accept frame stuff
         self.show_accept_frame_widgets()
         self.create_place_treeview()
+
+        self.af_frame=tk.Frame(self.root)
+        self.af_frame.grid(row=2)
         self.place_accept_frame_btn()
+        self.place_accept_frame_response_lebel()
         self.place_update_treeview_btn()
 
     def quit(self):
@@ -114,10 +118,16 @@ class Test():
         self.widget_list_of_create_frame.append(self.submit_btn)
 
     def place_create_frame_response_lebel(self):
-        self.response_label = tk.Label(self.root, text="result msg", borderwidth=3, relief="sunken",
-                                       width=30, height=2)
-        self.response_label.grid(column=1, row=7, padx=5, pady=5)
-        self.widget_list_of_create_frame.append(self.response_label)
+        self.cf_response_label = tk.Label(self.root, text="result msg", borderwidth=3, relief="sunken",
+                                          width=30, height=2)
+        self.cf_response_label.grid(column=1, row=7, padx=5, pady=5)
+        self.widget_list_of_create_frame.append(self.cf_response_label)
+
+    def place_accept_frame_response_lebel(self):
+        self.af_response_label = tk.Label(self.root, text="result msg", borderwidth=3, relief="sunken",
+                                          width=30, height=2)
+        self.af_response_label.grid(column=1, row=2, padx=5, pady=5)
+        self.widget_list_of_accept_frame.append(self.af_response_label)
 
     def show_create_frame_widgets(self):
         # hides accept frame widgets
@@ -129,6 +139,7 @@ class Test():
         # changes collor
         self.btn_show_accept_frame.config(bg="white")
         self.btn_show_create_frame.config(bg='blue')
+        self.cf_response_label.config(text="response msg will appier here")
 
     def insert_entrys_data_into_db(self):
         """creating frame button function what takes entrys data and
@@ -190,7 +201,7 @@ class Test():
         """btn to force update treeview to get new vals from db if appiered"""
         self.update_treeview_btn = tk.Button(self.root, text='UPDATE', command=self.update_treeview,
                                     width=40, height=5)
-        self.update_treeview_btn.grid(column=1, row=2)
+        self.update_treeview_btn.grid(column=2, row=2)
         self.widget_list_of_accept_frame.append(self.update_treeview_btn)
 
      # SQL stuff
@@ -206,7 +217,7 @@ class Test():
             print("MySQL Database connection successful")
         except Error as err:
             print(f"Error: '{err}'")
-            self.response_label.config(text=f"Error: '{err}'")
+            self.cf_response_label.config(text=f"Error: '{err}'")
 
         return connection
 
@@ -227,10 +238,10 @@ class Test():
         try:
             cursor.execute(query)
             connection.commit()
-            self.response_label.config(text="Query successful")
+            self.cf_response_label.config(text="Query successful")
         except Error as err:
             print(f"Error: '{err}'")
-            self.response_label.config(text=ERROR_LABEL_MSG)
+            self.cf_response_label.config(text=ERROR_LABEL_MSG)
 
     # tk.triewiev stuff
     def accept_object(self):
