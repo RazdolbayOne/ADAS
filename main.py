@@ -7,6 +7,7 @@ except:
 class Test():
     def __init__(self):
         self.widget_list_of_create_frame=[]
+        self.widget_list_of_accept_frame=[]
         self.root = tk.Tk()
         self.root.geometry("600x400")
 
@@ -24,11 +25,12 @@ class Test():
 
     def place_switch_buttons(self):
         self.btn_show_create_frame = tk.Button(self.root, text='Ielikt jaunu obj', bg="blue",
+                                               command=self.show_create_frame_widgets,
                                                width=40, height=5)
         self.btn_show_create_frame.grid(column=0, row=0, sticky='nesw')
 
-        self.btn_show_accept_frame = tk.Button(self.root,
-                                               text='Pienemt obj   ', command=self.hide_all_create_frame_widgets,
+        self.btn_show_accept_frame = tk.Button(self.root,text='Pienemt obj   ',
+                                               command=self.show_accept_frame_widgets,bg='white',
                                                width=50, height=5)
         self.btn_show_accept_frame.grid(column=1, row=0, sticky='nesw')
 
@@ -91,11 +93,27 @@ class Test():
         self.response_label.grid(column=1, row=7, padx=5, pady=5)
         self.widget_list_of_create_frame.append(self.response_label)
 
-    def hide_all_create_frame_widgets(self):
+    def show_accept_frame_widgets(self):
+        # hides create frame widgets
         for w in self.widget_list_of_create_frame:
-            w.grid_forget()
+            w.grid_remove()
+        # shows accept frame widgets
+        for w in self.widget_list_of_accept_frame:
+            w.grid()
+        # changes collor
+        self.btn_show_accept_frame.config(bg="blue")
+        self.btn_show_create_frame.config(bg='white')
 
-
+    def show_create_frame_widgets(self):
+        # hides accept frame widgets
+        for w in self.widget_list_of_accept_frame:
+            w.grid_remove()
+        # shows create frame widgets
+        for w in self.widget_list_of_create_frame:
+            w.grid()
+        # changes collor
+        self.btn_show_accept_frame.config(bg="white")
+        self.btn_show_create_frame.config(bg='blue')
 
 
     def click_test(self):
