@@ -25,7 +25,16 @@ class Test():
         self.root.geometry("800x400")
         self.root.title("ADAS")
 
+
+        self.switch_btn_frame=tk.Frame(self.root)
+        self.switch_btn_frame.pack()
         self.place_switch_buttons()
+        #frame what stores labels and entrys for object creation
+        self.obj_data_input_frame=tk.Frame(self.root)
+        self.obj_data_input_frame.pack()
+        self.create_cf_labels_and_entrys()
+
+        """
         # create frame stuff
         self.place_create_frame_labels()
         self.place_create_frame_entrys()
@@ -40,6 +49,24 @@ class Test():
         self.place_accept_frame_btn()
         self.place_accept_frame_response_lebel()
         self.place_update_treeview_btn()
+        """
+        """
+               self.place_switch_buttons()
+               # create frame stuff
+               self.place_create_frame_labels()
+               self.place_create_frame_entrys()
+               self.place_create_frame_submit_btn()
+               self.place_create_frame_response_lebel()
+               # accept frame stuff
+               self.show_accept_frame_widgets()
+               self.create_place_treeview()
+
+               self.af_frame=tk.Frame(self.root)
+               self.af_frame.grid(row=2)
+               self.place_accept_frame_btn()
+               self.place_accept_frame_response_lebel()
+               self.place_update_treeview_btn()
+               """
 
     def quit(self):
         self.root.destroy()
@@ -48,66 +75,73 @@ class Test():
         self.root.mainloop()
 
     def place_switch_buttons(self):
-        self.btn_show_create_frame = tk.Button(self.root, text='Ielikt jaunu obj', bg="blue",
-                                               command=self.show_create_frame_widgets,
-                                               width=40, height=5)
-        self.btn_show_create_frame.grid(column=0, row=0, sticky='nesw')
+        btn_show_create_frame = tk.Button(self.switch_btn_frame, text='Ielikt jaunu obj', bg="blue",
+                                          command=self.show_create_frame_widgets,
+                                          width=40, height=5)
+        btn_show_create_frame.pack(side="left")
 
-        self.btn_show_accept_frame = tk.Button(self.root, text='Pienemt obj   ',
-                                               command=self.show_accept_frame_widgets, bg='white',
-                                               width=50, height=5)
-        self.btn_show_accept_frame.grid(column=1, row=0, sticky='nesw')
+        btn_show_accept_frame = tk.Button(self.switch_btn_frame, text='Pienemt obj   ',
+                                          command=self.show_accept_frame_widgets, bg='white',
+                                          width=50, height=5)
+        btn_show_accept_frame.pack(side="left")
 
     # All about create frame
-    def place_create_frame_labels(self):
-        self.adress_label = tk.Label(self.root, text="ADRESE(STRING)", borderwidth=3, relief="sunken", width=40,
+    def create_cf_labels_and_entrys(self):
+        frame1=tk.Frame(self.obj_data_input_frame)
+        frame1.pack()
+        frame2 = tk.Frame(self.obj_data_input_frame)
+        frame2.pack()
+        #adress label and entry
+        self.adress_label = tk.Label(frame1, text="ADRESE(STRING)", borderwidth=3, relief="sunken", width=40,
                                      height=2)
-        self.adress_label.grid(column=0, row=2, padx=5, pady=5)
+        self.adress_label.pack(side="left")
         self.widget_list_of_create_frame.append(self.adress_label)
 
-        self.then_label = tk.Label(self.root, text="KAD(YYYY-MM-DD)", borderwidth=3, relief="sunken", width=40,
-                                   height=2)
-        self.then_label.grid(column=0, row=3, padx=5, pady=5)
-        self.widget_list_of_create_frame.append(self.then_label)
-
-        self.priority_label = tk.Label(self.root, text="Pioritate(NUMBER)", borderwidth=3, relief="sunken", width=40,
-                                       height=2)
-        self.priority_label.grid(column=0, row=4, padx=5, pady=5)
-        self.widget_list_of_create_frame.append(self.priority_label)
-
-        self.bigade_label = tk.Label(self.root, text="Brigade(NUMBER)", borderwidth=3, relief="sunken", width=40,
-                                     height=2)
-        self.bigade_label.grid(column=0, row=5, padx=5, pady=5)
-        self.widget_list_of_create_frame.append(self.bigade_label)
-
-        self.commentary_label = tk.Label(self.root, text="Komentars", borderwidth=3, relief="sunken",
-                                         width=40, height=2)
-        self.commentary_label.grid(column=0, row=6, padx=5, pady=5)
-        self.widget_list_of_create_frame.append(self.commentary_label)
-
-    def place_create_frame_entrys(self):
-        self.adress_entry = tk.Entry(self.root, borderwidth=3, width=30)
-        self.adress_entry.grid(column=1, row=2, padx=5, pady=5)
+        self.adress_entry = tk.Entry(frame1, borderwidth=3, width=40)
+        self.adress_entry.pack(side="left")
         self.widget_list_of_create_frame.append(self.adress_entry)
 
-        self.then_entry = tk.Entry(self.root, borderwidth=3, width=30)
-        self.then_entry.grid(column=1, row=3, padx=5, pady=5)
-        self.widget_list_of_create_frame.append(self.then_entry)
+        #date to do the object
+        self.date_todo_label = tk.Label(frame2, text="KAD(YYYY-MM-DD)", borderwidth=3, relief="sunken", width=40,
+                                        height=2)
+        self.date_todo_label.pack(side="left")
+        self.widget_list_of_create_frame.append(self.date_todo_label)
 
-        # priority_label
-        self.priority_entry = tk.Entry(self.root, borderwidth=3, width=30)
-        self.priority_entry.grid(column=1, row=4, padx=5, pady=5)
+        self.date_todo_entry = tk.Entry(frame2, borderwidth=3, width=40)
+        self.date_todo_entry.pack(side="left")
+        self.widget_list_of_create_frame.append(self.date_todo_entry)
+        """
+        #priority label
+        self.priority_label = tk.Label(self.obj_data_input_frame, text="Pioritate(NUMBER)", borderwidth=3, relief="sunken", width=40,
+                                       height=2)
+        self.priority_label.pack(side="left")
+        self.widget_list_of_create_frame.append(self.priority_label)
+        
+        self.priority_entry = tk.Entry(self.obj_data_input_frame, borderwidth=3, width=30)
+        self.priority_entry.pack(side="left")
         self.widget_list_of_create_frame.append(self.priority_entry)
+        
+        #brigade
+        self.brigade_num_label = tk.Label(self.obj_data_input_frame, text="Brigade(NUMBER)", borderwidth=3, relief="sunken", width=40,
+                                          height=2)
+        self.brigade_num_label.pack(side="left")
+        self.widget_list_of_create_frame.append(self.brigade_num_label)
 
-        # bigade_label
-        self.bigade_entry = tk.Entry(self.root, borderwidth=3, width=30)
-        self.bigade_entry.grid(column=1, row=5, padx=5, pady=5)
-        self.widget_list_of_create_frame.append(self.bigade_entry)
+        self.brigade_num_entry = tk.Entry(self.obj_data_input_frame, borderwidth=3, width=30)
+        self.brigade_num_entry.pack(side="left")
+        self.widget_list_of_create_frame.append(self.brigade_num_entry)
+        
+        #comentary 
+        self.commentary_label = tk.Label(self.obj_data_input_frame, text="Komentars", borderwidth=3, relief="sunken",
+                                         width=40, height=2)
+        self.commentary_label.pack(side="left")
+        self.widget_list_of_create_frame.append(self.commentary_label)
 
-        # commentary_
-        self.commentary_entry = tk.Entry(self.root, borderwidth=3, width=30)
-        self.commentary_entry.grid(column=1, row=6, padx=5, pady=5)
-        self.widget_list_of_create_frame.append(self.commentary_entry)
+        self.commentary_entry = tk.Entry(self.obj_data_input_frame, borderwidth=3, width=30)
+        self.commentary_entry.pack(side="left")
+        self.widget_list_of_create_frame.append(self.commentary_entry)"""
+
+
 
     def place_create_frame_submit_btn(self):
         """places submit button"""
@@ -174,7 +208,7 @@ class Test():
         if not comment:
             comment = "NAV"
 
-        insert_data_query += "('" + adress + "','" + str(self.then_entry.get()) + "'," + str(priority) + ",0,0," + str(
+        insert_data_query += "('" + adress + "','" + str(self.date_todo_entry.get()) + "'," + str(priority) + ",0,0," + str(
             brigade) + ",'" + comment + "'); "
         print(insert_data_query)
         self.execute_query(conn, insert_data_query)
