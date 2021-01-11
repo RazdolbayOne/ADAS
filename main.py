@@ -33,9 +33,9 @@ class Test():
         self.place_create_frame_response_lebel()
         # accept frame stuff
         self.show_accept_frame_widgets()
-        self.place_recordings_from_db()
-
+        self.create_place_treeview()
         self.place_accept_frame_btn()
+        self.place_update_treeview_btn()
 
     def quit(self):
         self.root.destroy()
@@ -107,7 +107,8 @@ class Test():
 
     def place_create_frame_submit_btn(self):
         """places submit button"""
-        self.submit_btn = tk.Button(self.root, text='IERAKSTIT',bg="green",relief="groove", command=self.insert_entrys_data_into_db,
+        self.submit_btn = tk.Button(self.root, text='IERAKSTIT', bg="green", relief="groove",
+                                    command=self.insert_entrys_data_into_db,
                                     width=40, height=5)
         self.submit_btn.grid(column=0, row=7)
         self.widget_list_of_create_frame.append(self.submit_btn)
@@ -179,68 +180,20 @@ class Test():
         self.btn_show_accept_frame.config(bg="blue")
         self.btn_show_create_frame.config(bg='white')
 
-    def place_recordings_from_db(self):
-        """creates tk.TreeWiev object and insert into it data from db objects """
-        self.tree = ttk.Treeview(self.root, columns=( 'ADRESS','DATE','FINISH_DATE'))
-
-        # Set the heading (Attribute Names)
-        self.tree.heading('#0', text='BRIGADES NUM')
-        self.tree.heading('#1', text='ADRESE')
-        self.tree.heading('#2', text='DATE_TO_END')
-        self.tree.heading('#3', text='FINISH_DATE')
-
-        # Specify attributes of the columns (We want to stretch it!)
-        self.tree.column('#0', stretch=tk.YES)
-        self.tree.column('#1', stretch=tk.YES)
-        self.tree.column('#2', stretch=tk.YES)
-        self.tree.column('#3', stretch=tk.YES)
-
-        self.tree.grid(row=1, columnspan=2, sticky='nsew')
-        self.treeview = self.tree
-
-        self.iid = 0
-        self.id = 0
-        self.widget_list_of_accept_frame.append(self.treeview)
-
-        # get data from db
-        conn = self.create_db_connection()
-        q1 = "SELECT *FROM objekts;"
-        results = self.read_query(conn, q1)
-        # Returns a list of lists
-        from_db = []
-        for result in results:
-            result = list(result)
-            from_db.append(result)
-        for row in from_db:
-            # example of  row
-            # [6, 'aizdomu 34', datetime.date(2022, 11, 12), 2, 0, None, 0, None, 2]
-            #  0       1              2                      3  4   5    6   7    8
-
-            # row[6] higher then 0 means this row already was accepted
-            if row[6]==1:
-                continue
-            obj_id=row[0]
-            adress=row[1]
-            todo_date=row[2]
-            fin_date=row[5]
-            brigade=row[8]
-            self.treeview.insert('', 'end', iid=obj_id,text=brigade,
-                                 values=(adress,str(todo_date),str(fin_date)))
-            self.iid = self.iid + 1
-            self.id = self.id + 1
-
-
     def place_accept_frame_btn(self):
         self.accept_btn = tk.Button(self.root, text='PIENEMT', command=self.accept_object,
                                     width=40, height=5)
-        self.accept_btn.grid(column=0, row=100)
+        self.accept_btn.grid(column=0, row=2)
         self.widget_list_of_accept_frame.append(self.accept_btn)
 
-    def clear_treeview(self):
-        for i in self.treeview.get_children():
-            self.treeview.delete(i)
+    def place_update_treeview_btn(self):
+        """btn to force update treeview to get new vals from db if appiered"""
+        self.update_treeview_btn = tk.Button(self.root, text='UPDATE', command=self.update_treeview,
+                                    width=40, height=5)
+        self.update_treeview_btn.grid(column=1, row=2)
+        self.widget_list_of_accept_frame.append(self.update_treeview_btn)
 
-    # SQL stuff
+     # SQL stuff
     def create_db_connection(self):
         connection = None
         try:
@@ -284,26 +237,82 @@ class Test():
         """deletes from Tree focused row also
         sends query to update focused row to change ACCEPTED to True
         """
-        row_id=self.tree.focus()
-        #if not focused tree
-        if(row_id==''):return None
+        row_id = self.tree.focus()
+        # if not focused tree
+        if row_id == '': return None
 
         row_id = int(row_id)
-        #delete it from tree
+        # delete it from tree
         self.treeview.delete(row_id)
-        #query to update row ; where row_id is also PK in db for records
-        update_q=f"UPDATE objekts SET ACCEPTED = 1 WHERE OBJ_ID = {row_id};"
+        # query to update row ; where row_id is also PK in db for records
+        update_q = f"UPDATE objekts SET ACCEPTED = 1 WHERE OBJ_ID = {row_id};"
 
-        conn=self.create_db_connection()
-        self.execute_query(conn,update_q)
-
-
-    def update_obj_recordings(self):
-        """ updates recordings in tk.Treeview """
-        #TODO NEED TO DONE THIS PART
-        pass
+        conn = self.create_db_connection()
+        self.execute_query(conn, update_q)
 
 
+    def update_treeview(self):
+        self.clear_treeview()
+        self.insert_data_into_treeview()
+
+    def clear_treeview(self):
+        for i in self.treeview.get_children():
+            self.treeview.delete(i)
+
+    def create_place_treeview(self):
+        """creates tk.TreeWiev object and insert into it data from db objects """
+        self.tree = ttk.Treeview(self.root, columns=('ADRESS', 'DATE', 'FINISH_DATE'))
+
+        # Set the heading (Attribute Names)
+        self.tree.heading('#0', text='BRIGADES NUM')
+        self.tree.heading('#1', text='ADRESE')
+        self.tree.heading('#2', text='DATE_TO_END')
+        self.tree.heading('#3', text='FINISH_DATE')
+
+        # Specify attributes of the columns (We want to stretch it!)
+        self.tree.column('#0', stretch=tk.YES)
+        self.tree.column('#1', stretch=tk.YES)
+        self.tree.column('#2', stretch=tk.YES)
+        self.tree.column('#3', stretch=tk.YES)
+
+        self.tree.grid(row=1, columnspan=2, sticky='nsew')
+        self.treeview = self.tree
+
+        self.iid = 0
+        self.id = 0
+        self.widget_list_of_accept_frame.append(self.treeview)
+
+        self.insert_data_into_treeview()
+
+
+
+    def insert_data_into_treeview(self):
+        # get data from db
+        conn = self.create_db_connection()
+        q1 = "SELECT *FROM objekts;"
+        results = self.read_query(conn, q1)
+        # Returns a list of lists
+        from_db = []
+        for result in results:
+            result = list(result)
+            from_db.append(result)
+        for row in from_db:
+            # example of  row
+            # [6, 'aizdomu 34', datetime.date(2022, 11, 12), 2, 0, None, 0, None, 2]
+            #  0       1              2                      3  4   5    6   7    8
+
+            # row[6] higher then 0 means this row already was accepted
+            if row[6] == 1:
+                continue
+            obj_id = row[0]
+            adress = row[1]
+            todo_date = row[2]
+            fin_date = row[5]
+            brigade = row[8]
+            self.treeview.insert('', 'end', iid=obj_id, text=brigade,
+                                 values=(adress, str(todo_date), str(fin_date)))
+            self.iid = self.iid + 1
+            self.id = self.id + 1
 app = Test()
 
 app.mainloop()
