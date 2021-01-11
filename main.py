@@ -30,8 +30,12 @@ class Test():
         self.switch_btn_frame=tk.Frame(self.root)
         self.switch_btn_frame.pack()
         self.place_switch_buttons()
+
+        # main frame of create_frame
+        self.root_create_frame=tk.Frame(self.root)
+        self.root_create_frame.pack()
         #frame what stores labels and entrys for object creation
-        self.main_obj_data_input_frame=tk.Frame(self.root)
+        self.main_obj_data_input_frame=tk.Frame(self.root_create_frame)
         self.main_obj_data_input_frame.pack()
         #contains subframes of obj_data_input_frame
         self.cf_input_frames=[]
@@ -40,6 +44,20 @@ class Test():
             input_frame.pack()
             self.cf_input_frames.append(input_frame)
         self.create_cf_labels_and_entrys()
+
+        #frame what contains submit btn and status label
+        self.submit_btn_status_label = tk.Frame(self.root_create_frame)
+        self.submit_btn_status_label.pack()
+
+        self.place_cf_submit_btn()
+        self.place_create_frame_response_lebel()
+        #======================================================
+        #accept frame part
+        #======================================================
+
+        #root Frame
+        self.root_accept_frame = tk.Frame(self.root)
+        self.root_accept_frame.pack()
         """
         # create frame stuff
         self.place_create_frame_labels()
@@ -81,15 +99,15 @@ class Test():
         self.root.mainloop()
 
     def place_switch_buttons(self):
-        btn_show_create_frame = tk.Button(self.switch_btn_frame, text='Ielikt jaunu obj', bg="blue",
+        self.btn_show_create_frame = tk.Button(self.switch_btn_frame, text='Ielikt jaunu obj', bg="blue",
                                           command=self.show_create_frame_widgets,
                                           width=40, height=5)
-        btn_show_create_frame.pack(side="left")
+        self.btn_show_create_frame.pack(side="left")
 
-        btn_show_accept_frame = tk.Button(self.switch_btn_frame, text='Pienemt obj   ',
+        self.btn_show_accept_frame = tk.Button(self.switch_btn_frame, text='Pienemt obj   ',
                                           command=self.show_accept_frame_widgets, bg='white',
                                           width=50, height=5)
-        btn_show_accept_frame.pack(side="left")
+        self.btn_show_accept_frame.pack(side="left")
 
     # All about create frame
     def create_cf_labels_and_entrys(self):
@@ -146,18 +164,18 @@ class Test():
 
 
 
-    def place_create_frame_submit_btn(self):
+    def place_cf_submit_btn(self):
         """places submit button"""
-        self.submit_btn = tk.Button(self.root, text='IERAKSTIT', bg="green", relief="groove",
+        self.submit_btn = tk.Button(self.submit_btn_status_label, text='IERAKSTIT', bg="green", relief="groove",
                                     command=self.insert_entrys_data_into_db,
-                                    width=40, height=5)
-        self.submit_btn.grid(column=0, row=7)
+                                    width=40, height=2)
+        self.submit_btn.pack(side="left")
         self.widget_list_of_create_frame.append(self.submit_btn)
 
     def place_create_frame_response_lebel(self):
-        self.cf_response_label = tk.Label(self.root, text="result msg", borderwidth=3, relief="sunken",
-                                          width=30, height=2)
-        self.cf_response_label.grid(column=1, row=7, padx=5, pady=5)
+        self.cf_response_label = tk.Label(self.submit_btn_status_label, text="result msg", borderwidth=3,
+                                          width=35, height=2)
+        self.cf_response_label.pack(side="left")
         self.widget_list_of_create_frame.append(self.cf_response_label)
 
     def place_accept_frame_response_lebel(self):
@@ -167,16 +185,15 @@ class Test():
         self.widget_list_of_accept_frame.append(self.af_response_label)
 
     def show_create_frame_widgets(self):
-        # hides accept frame widgets
-        for w in self.widget_list_of_accept_frame:
-            w.grid_remove()
-        # shows create frame widgets
-        for w in self.widget_list_of_create_frame:
-            w.grid()
+        # hides create frame widgets
+        self.root_accept_frame.pack_forget()
+        # shows accept frame widgets
+        self.root_create_frame.pack()
+
+
         # changes collor
         self.btn_show_accept_frame.config(bg="white")
         self.btn_show_create_frame.config(bg='blue')
-        self.cf_response_label.config(text="response msg will appier here")
 
     def insert_entrys_data_into_db(self):
         """creating frame button function what takes entrys data and
@@ -199,7 +216,7 @@ class Test():
             priority = 3
 
         # bigade_label
-        brigade = self.bigade_entry.get()
+        brigade = self.brigade_num_entryigade_entry.get()
         if type(brigade) == int:
             if brigade > 3 or brigade < 0:
                 brigade = 1
@@ -219,11 +236,10 @@ class Test():
     # all about accept frame
     def show_accept_frame_widgets(self):
         # hides create frame widgets
-        for w in self.widget_list_of_create_frame:
-            w.grid_remove()
+        self.root_create_frame.pack_forget()
         # shows accept frame widgets
-        for w in self.widget_list_of_accept_frame:
-            w.grid()
+        self.root_accept_frame.pack()
+
         # changes collor
         self.btn_show_accept_frame.config(bg="blue")
         self.btn_show_create_frame.config(bg='white')
