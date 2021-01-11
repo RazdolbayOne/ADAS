@@ -181,17 +181,19 @@ class Test():
 
     def place_recordings_from_db(self):
         """creates tk.TreeWiev object and insert into it data from db objects """
-        self.tree = ttk.Treeview(self.root, columns=( 'DATE','FINISH_DATE'))
+        self.tree = ttk.Treeview(self.root, columns=( 'ADRESS','DATE','FINISH_DATE'))
 
         # Set the heading (Attribute Names)
-        self.tree.heading('#0', text='ADDRES')
-        self.tree.heading('#1', text='DATE')
-        self.tree.heading('#2', text='FINISH_DATE')
+        self.tree.heading('#0', text='BRIGADES NUM')
+        self.tree.heading('#1', text='ADRESE')
+        self.tree.heading('#2', text='DATE_TO_END')
+        self.tree.heading('#3', text='FINISH_DATE')
 
         # Specify attributes of the columns (We want to stretch it!)
         self.tree.column('#0', stretch=tk.YES)
         self.tree.column('#1', stretch=tk.YES)
         self.tree.column('#2', stretch=tk.YES)
+        self.tree.column('#3', stretch=tk.YES)
 
         self.tree.grid(row=1, columnspan=2, sticky='nsew')
         self.treeview = self.tree
@@ -210,18 +212,20 @@ class Test():
             result = list(result)
             from_db.append(result)
         for row in from_db:
-            # example of output row
+            # example of  row
             # [6, 'aizdomu 34', datetime.date(2022, 11, 12), 2, 0, None, 0, None, 2]
-            #  0       1              2                       3 4   5    6   7    8
+            #  0       1              2                      3  4   5    6   7    8
 
             # row[6] higher then 0 means this row already was accepted
             if row[6]==1:
                 continue
+            obj_id=row[0]
             adress=row[1]
             todo_date=row[2]
             fin_date=row[5]
-            self.treeview.insert('', 'end', iid=self.iid,text=adress,
-                                 values=(str(todo_date),str(fin_date)))
+            brigade=row[8]
+            self.treeview.insert('', 'end', iid=obj_id,text=brigade,
+                                 values=(adress,str(todo_date),str(fin_date)))
             self.iid = self.iid + 1
             self.id = self.id + 1
 
@@ -280,16 +284,23 @@ class Test():
         """deletes from Tree focused row also
         sends query to update focused row to change ACCEPTED to True
         """
-        row_id = int(self.tree.focus())
+        row_id=self.tree.focus()
+        #if not focused tree
+        if(row_id==''):return None
+
+        row_id = int(row_id)
+        #delete it from tree
         self.treeview.delete(row_id)
-        for line in self.tree.get_children():
-            print(line)
-            for value in self.tree.item(line)['values']:
-                print(value)
-        print("Accepted")
+        #query to update row ; where row_id is also PK in db for records
+        update_q=f"UPDATE objekts SET ACCEPTED = 1 WHERE OBJ_ID = {row_id};"
+
+        conn=self.create_db_connection()
+        self.execute_query(conn,update_q)
+
 
     def update_obj_recordings(self):
         """ updates recordings in tk.Treeview """
+        #TODO NEED TO DONE THIS PART
         pass
 
 
