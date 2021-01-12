@@ -84,9 +84,13 @@ class Test():
 
         # frame where will be label entry and "Get info btn" about objects
         self.worker_input_frame = tk.Frame(self.root_worker_tab)
-        # self.worker_input_frame.pack()
-
         self.place_input_frame_widgets(self.worker_input_frame)
+
+        # frame where will be tree what displays data
+        self.worker_tree_frame = tk.Frame(self.root_worker_tab)
+        #self.worker_tab_treeview = None
+        self.create_place_worker_tab_treeview()
+        #self.worker_tree_frame.pack()
 
     def quit(self):
         self.root.destroy()
@@ -177,7 +181,9 @@ class Test():
         self.widget_list_of_accept_frame.append(self.af_response_label)
 
     def show_create_tab_widgets(self):
-        # hides create frame widgets
+        # hide worker tab widgets
+        self.root_worker_tab.pack_forget()
+        # hides accept frame widgets
         self.root_accept_frame.pack_forget()
         # shows accept frame widgets
         self.root_create_frame.pack()
@@ -231,7 +237,7 @@ class Test():
     def show_accept_tab_widgets(self):
         # hides create frame widgets
         self.root_create_frame.pack_forget()
-        #hide workers widgets
+        # hide workers widgets
         self.root_worker_tab.pack_forget()
         # shows accept frame widgets
         self.root_accept_frame.pack()
@@ -241,10 +247,11 @@ class Test():
         self.af_accept_btn_and_status_label.pack()
 
         # TODO NEED TO FIX THIS MESS X2
-        #self.wt_response_label.pack()
-        #self.wt_brigade_entry.pack()
-        #self.wt_submit_btn.pack()
+        # self.wt_response_label.pack()
+        # self.wt_brigade_entry.pack()
+        # self.wt_submit_btn.pack()
         self.worker_input_frame.pack()
+        self.worker_tree_frame.pack()
 
         # changes collor
         self.btn_show_accept_frame.config(bg="blue")
@@ -346,7 +353,7 @@ class Test():
         """updates data in treeview firts delets all recordings and then query
         to mysql db to get information and then places it into treeview"""
         self.clear_treeview(self.cf_tab_treeview)
-        self.get_data_lists_from_db()
+        self.get_data_lists_from_db_for_cf_tree()
         self.af_response_label.config(text="UPDATED TABLE!-->")
 
     def clear_treeview(self, tree):
@@ -372,8 +379,77 @@ class Test():
         self.cf_tab_treeview.column('#3', stretch=tk.YES)
 
         self.cf_tab_treeview.pack()
+        #get data from DB
+        self.get_data_lists_from_db_for_cf_tree()
 
-        from_db = self.get_data_lists_from_db()
+    def create_place_worker_tab_treeview(self):
+        """create and places tree for workers tab"""
+
+        """creates tk.TreeWiev object and insert into it data from db objects """
+        self.worker_tab_treeview = ttk.Treeview(self.worker_tree_frame, columns=('ADRESS', 'TODO_DATE', 'COMMENT'))
+
+        # Set the heading (Attribute Names)
+        self.worker_tab_treeview.heading('#0', text='PRORITY')
+        self.worker_tab_treeview.heading('#1', text='ADDRESE')
+        self.worker_tab_treeview.heading('#2', text='DATE_TO_END')
+        self.worker_tab_treeview.heading('#3', text='COMMENT')
+
+        # Specify attributes of the columns (We want to stretch it!)
+        self.worker_tab_treeview.column('#0', stretch=tk.YES)
+        self.worker_tab_treeview.column('#1', stretch=tk.YES)
+        self.worker_tab_treeview.column('#2', stretch=tk.YES)
+        self.worker_tab_treeview.column('#3', stretch=tk.YES)
+
+        self.worker_tab_treeview.pack()
+        self.get_data_lists_from_db_for_worker_tree()
+
+    def get_data_lists_from_db_for_worker_tree(self):
+        """gets all data from mysql db makes from then list of list"""
+
+        # example of  outputing row
+        # [6, 'aizdomu 34', datetime.date(2022, 11, 12), 2, 0, None, 0, None, 2]
+
+        # get data from db
+        conn = self.create_db_connection()
+        q1 = "SELECT *FROM objekts;"
+        results = self.read_query(conn, q1)
+        # Returns a list of lists
+        from_db = []
+        for result in results:
+            result = list(result)
+            from_db.append(result)
+        # inserting data into treeview
+        for row in from_db:
+            # example of  row
+            # [6, 'aizdomu 34', datetime.date(2022, 11, 12), 2, 0, None, 0, None, 2]
+            #  0       1              2                      3  4   5    6   7    8
+
+            # row[6] higher then 0 means this row already was accepted
+            if row[6] == 1:
+                continue
+            obj_id = row[0]
+            adress = row[1]
+            priority=row[3]
+            todo_date = row[2]
+            comment = row[7]
+            self.worker_tab_treeview.insert('', 'end', iid=obj_id, text=str(priority),
+                                        values=(adress, str(todo_date), str(comment)))
+
+    def get_data_lists_from_db_for_cf_tree(self):
+        """gets all data from mysql db makes from then list of list"""
+
+        # example of  outputing row
+        # [6, 'aizdomu 34', datetime.date(2022, 11, 12), 2, 0, None, 0, None, 2]
+
+        # get data from db
+        conn = self.create_db_connection()
+        q1 = "SELECT *FROM objekts;"
+        results = self.read_query(conn, q1)
+        # Returns a list of lists
+        from_db = []
+        for result in results:
+            result = list(result)
+            from_db.append(result)
         # inserting data into treeview
         for row in from_db:
             # example of  row
@@ -391,30 +467,12 @@ class Test():
             self.cf_tab_treeview.insert('', 'end', iid=obj_id, text=brigade,
                                         values=(adress, str(todo_date), str(fin_date)))
 
-    def get_data_lists_from_db(self):
-        """gets all data from mysql db makes from then list of list"""
-
-        # example of  outputing row
-        # [6, 'aizdomu 34', datetime.date(2022, 11, 12), 2, 0, None, 0, None, 2]
-
-        # get data from db
-        conn = self.create_db_connection()
-        q1 = "SELECT *FROM objekts;"
-        results = self.read_query(conn, q1)
-        # Returns a list of lists
-        from_db = []
-        for result in results:
-            result = list(result)
-            from_db.append(result)
-        return from_db
-
     # worker tabs widgets and stuff
 
     def place_input_frame_widgets(self, root):
         """places label,entry, and btn widgets to input frame of workers tab"""
 
         self.sub_frame_workers_input1 = tk.Frame(root)
-        # sub_frame.pack()
         # label
         self.wt_response_label = tk.Label(self.sub_frame_workers_input1, text="BRIGADES NUM", borderwidth=3,
                                           width=40, height=2)
