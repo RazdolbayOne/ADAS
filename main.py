@@ -88,9 +88,11 @@ class Test():
 
         # frame where will be tree what displays data
         self.worker_tree_frame = tk.Frame(self.root_worker_tab)
-        #self.worker_tab_treeview = None
         self.create_place_worker_tab_treeview()
-        #self.worker_tree_frame.pack()
+
+        #frame where button and status will be
+        self.worker_submit_btn_and_label_frame = tk.Frame(self.root_worker_tab)
+        self.worker_create_place_submit_btn_and_status_label()
 
     def quit(self):
         self.root.destroy()
@@ -188,6 +190,9 @@ class Test():
         # shows accept frame widgets
         self.root_create_frame.pack()
 
+        self.worker_input_frame.pack()
+        self.worker_tree_frame.pack()
+        self.worker_submit_btn_and_label_frame.pack()
 
         # changes collor
         self.btn_show_accept_frame.config(bg="white")
@@ -252,6 +257,7 @@ class Test():
         # self.wt_submit_btn.pack()
         self.worker_input_frame.pack()
         self.worker_tree_frame.pack()
+        self.worker_submit_btn_and_label_frame.pack()
 
         # changes collor
         self.btn_show_accept_frame.config(bg="blue")
@@ -434,6 +440,20 @@ class Test():
             comment = row[7]
             self.worker_tab_treeview.insert('', 'end', iid=obj_id, text=str(priority),
                                         values=(adress, str(todo_date), str(comment)))
+
+    def worker_create_place_submit_btn_and_status_label(self):
+        """places on worker tab button and status label"""
+        self.worker_submit_btn = tk.Button(self.worker_submit_btn_and_label_frame, bg="pink", text='DONE',
+                                       command=self.printec,
+                                       width=40, height=5)
+        self.worker_submit_btn.pack(side="left")
+
+        # adress label and entry
+        self.worker_tab_status_label = tk.Label(self.worker_submit_btn_and_label_frame, text="ADRESE(STRING)", borderwidth=3, relief="sunken",
+                                     width=40,
+                                     height=2)
+        self.worker_tab_status_label.pack(side="left")
+
 
     def get_data_lists_from_db_for_cf_tree(self):
         """gets all data from mysql db makes from then list of list"""
