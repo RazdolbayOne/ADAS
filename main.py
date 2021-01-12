@@ -8,7 +8,7 @@ from mysql.connector import Error
 import datetime
 
 import tkinter.ttk as ttk
-
+from datetime import datetime
 ERROR_LABEL_MSG = "ERROR wrong input or DB not responds"
 
 DB_HOST = "localhost"
@@ -84,7 +84,7 @@ class Test():
 
         # frame where will be label entry and "Get info btn" about objects
         self.worker_input_frame = tk.Frame(self.root_worker_tab)
-        self.place_input_frame_widgets(self.worker_input_frame)
+        self.worker_place_input_frame_widgets(self.worker_input_frame)
 
         # frame where will be tree what displays data
         self.worker_tree_frame = tk.Frame(self.root_worker_tab)
@@ -355,6 +355,27 @@ class Test():
         conn = self.create_db_connection()
         self.execute_query(conn, update_q)
 
+    def worker_done_btn_event(self):
+        """deletes from Tree focused row also
+                sends query to update focused row to change ACCEPTED to True
+                """
+        row_id = self.worker_tab_treeview.focus()
+        # if not focused tree
+        if row_id == '':
+            self.worker_tab_status_label.config(text="<--Nope,click on needed row then on me!")
+            return None
+
+        row_id = int(row_id)
+        # delete it from tree
+        self.worker_tab_treeview.delete(row_id)
+        dateTimeObj = datetime.now()
+        timestampStr = dateTimeObj.strftime("%Y-%m-%d")
+        # query to update row ; where row_id is also PK in db for records
+        update_q = f"UPDATE objekts SET DATE_THEN_FINISHED ='"+timestampStr+"',DONE=1 WHERE OBJ_ID = "+str(row_id)+";"
+        print(update_q)
+        conn = self.create_db_connection()
+        self.execute_query(conn, update_q)
+
     def update_create_tab_treeview(self):
         """updates data in treeview firts delets all recordings and then query
         to mysql db to get information and then places it into treeview"""
@@ -407,9 +428,9 @@ class Test():
         self.worker_tab_treeview.column('#3', stretch=tk.YES)
 
         self.worker_tab_treeview.pack()
-        self.get_data_lists_from_db_for_worker_tree()
+        #self.get_data_lists_from_db_for_worker_tree()
 
-    def get_data_lists_from_db_for_worker_tree(self):
+    def get_data_lists_from_db_for_worker_tree(self,needed_brigades_num):
         """gets all data from mysql db makes from then list of list"""
 
         # example of  outputing row
@@ -417,7 +438,7 @@ class Test():
 
         # get data from db
         conn = self.create_db_connection()
-        q1 = "SELECT *FROM objekts;"
+        q1 = f"SELECT *FROM objekts WHERE BRIGADE_BRIG_NUM={str(needed_brigades_num)};"
         results = self.read_query(conn, q1)
         # Returns a list of lists
         from_db = []
@@ -444,8 +465,8 @@ class Test():
     def worker_create_place_submit_btn_and_status_label(self):
         """places on worker tab button and status label"""
         self.worker_submit_btn = tk.Button(self.worker_submit_btn_and_label_frame, bg="pink", text='DONE',
-                                       command=self.printec,
-                                       width=40, height=5)
+                                           command=self.worker_done_btn_event,
+                                           width=40, height=5)
         self.worker_submit_btn.pack(side="left")
 
         # adress label and entry
@@ -489,12 +510,12 @@ class Test():
 
     # worker tabs widgets and stuff
 
-    def place_input_frame_widgets(self, root):
+    def worker_place_input_frame_widgets(self, root):
         """places label,entry, and btn widgets to input frame of workers tab"""
 
         self.sub_frame_workers_input1 = tk.Frame(root)
         # label
-        self.wt_response_label = tk.Label(self.sub_frame_workers_input1, text="BRIGADES NUM", borderwidth=3,
+        self.wt_response_label = tk.Label(self.sub_frame_workers_input1, text="BRIGADES NUM max num=3", borderwidth=3,
                                           width=40, height=2)
         self.wt_response_label.pack()
         # entry
@@ -505,11 +526,24 @@ class Test():
 
         # btn
         self.wt_submit_btn = tk.Button(root, text='GET INFO OR UPDATE', bg="green", relief="groove",
-                                       command=self.printec,
+                                       command=self.worker_place_data_into_treeview,
                                        width=40, height=2)
         self.wt_submit_btn.pack(side="left")
 
-    def printec(self):
+    def worker_place_data_into_treeview(self):
+
+        brigades_num=int(self.wt_brigade_entry.get())
+        if type(brigades_num)==int:
+            if brigades_num>3 or brigades_num<1:
+                self.worker_tab_status_label.config(text="brigade number to small or to big")
+                brigades_num=1
+        else:
+            self.worker_tab_status_label.config(text="Wrong input type")
+            return None
+
+        self.clear_treeview(self.worker_tab_treeview)
+        self.get_data_lists_from_db_for_worker_tree(brigades_num)
+        self.worker_tab_status_label.config(text="UPDATED/GOT")
         print("workers input buton")
 
 
