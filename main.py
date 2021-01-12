@@ -64,7 +64,7 @@ class Test():
         self.af_treeview_frame = tk.Frame(self.root_accept_frame)
         # TODO NEED TO FIGUR OUT HOW TO GET RID OF THIS NONSEN row
         # self.af_treeview_frame.pack()
-        self.create_place_treeview()
+        self.create_place_cf_tab_treeview()
 
         # create frame for accept button and status lebel
         self.af_accept_btn_and_status_label = tk.Frame(self.root_accept_frame)
@@ -84,6 +84,9 @@ class Test():
 
         # frame where will be label entry and "Get info btn" about objects
         self.worker_input_frame = tk.Frame(self.root_worker_tab)
+        # self.worker_input_frame.pack()
+
+        self.place_input_frame_widgets(self.worker_input_frame)
 
     def quit(self):
         self.root.destroy()
@@ -179,6 +182,7 @@ class Test():
         # shows accept frame widgets
         self.root_create_frame.pack()
 
+
         # changes collor
         self.btn_show_accept_frame.config(bg="white")
         self.btn_show_create_frame.config(bg='blue')
@@ -227,29 +231,34 @@ class Test():
     def show_accept_tab_widgets(self):
         # hides create frame widgets
         self.root_create_frame.pack_forget()
+        #hide workers widgets
+        self.root_worker_tab.pack_forget()
         # shows accept frame widgets
         self.root_accept_frame.pack()
 
         # TODO NEED TO FIX THIS KASTIL
         self.af_treeview_frame.pack()
         self.af_accept_btn_and_status_label.pack()
+
+        # TODO NEED TO FIX THIS MESS X2
+        #self.wt_response_label.pack()
+        #self.wt_brigade_entry.pack()
+        #self.wt_submit_btn.pack()
+        self.worker_input_frame.pack()
+
         # changes collor
         self.btn_show_accept_frame.config(bg="blue")
         self.btn_show_create_frame.config(bg='white')
         self.btn_show_worker_frame.config(bg="white")
 
     def show_worker_tab_widgets(self):
-        """hides other frames and show up worker frame widgets"""
-        # hides create frame widgets
+        """hides other tabs widgets and unhides  worker tab widgets"""
+        # hides create tab widgets
         self.root_create_frame.pack_forget()
-        # hide accept frame widgets
+        # hide accept tab widgets
         self.root_accept_frame.pack_forget()
         # show root workers tab widgets
         self.root_worker_tab.pack()
-
-        # TODO NEED TO FIX THIS KASTIL
-        self.af_treeview_frame.pack()
-        self.af_accept_btn_and_status_label.pack()
 
         # changes collor
         self.btn_show_accept_frame.config(bg="white")
@@ -265,7 +274,7 @@ class Test():
     def place_update_treeview_btn(self):
         """btn to force update treeview to get new vals from db if appiered"""
         update_treeview_btn = tk.Button(self.af_accept_btn_and_status_label, bg="pink", text='UPDATE DATA IN TABLE',
-                                        command=self.update_treeview,
+                                        command=self.update_create_tab_treeview,
                                         width=40, height=5)
         update_treeview_btn.pack(side="left")
 
@@ -318,7 +327,7 @@ class Test():
         """deletes from Tree focused row also
         sends query to update focused row to change ACCEPTED to True
         """
-        row_id = self.treeview.focus()
+        row_id = self.cf_tab_treeview.focus()
         # if not focused tree
         if row_id == '':
             self.af_response_label.config(text="<--Nope,click on needed row then on me!")
@@ -326,52 +335,46 @@ class Test():
 
         row_id = int(row_id)
         # delete it from tree
-        self.treeview.delete(row_id)
+        self.cf_tab_treeview.delete(row_id)
         # query to update row ; where row_id is also PK in db for records
         update_q = f"UPDATE objekts SET ACCEPTED = 1 WHERE OBJ_ID = {row_id};"
 
         conn = self.create_db_connection()
         self.execute_query(conn, update_q)
 
-    def update_treeview(self):
-        self.clear_treeview()
-        self.insert_data_into_treeview()
+    def update_create_tab_treeview(self):
+        """updates data in treeview firts delets all recordings and then query
+        to mysql db to get information and then places it into treeview"""
+        self.clear_treeview(self.cf_tab_treeview)
+        self.get_data_lists_from_db()
         self.af_response_label.config(text="UPDATED TABLE!-->")
 
-    def clear_treeview(self):
-        for i in self.treeview.get_children():
-            self.treeview.delete(i)
+    def clear_treeview(self, tree):
+        """clears all recording in tree"""
+        for i in tree.get_children():
+            tree.delete(i)
 
-    def create_place_treeview(self):
+    def create_place_cf_tab_treeview(self):
 
         """creates tk.TreeWiev object and insert into it data from db objects """
-        self.treeview = ttk.Treeview(self.af_treeview_frame, columns=('ADRESS', 'DATE', 'FINISH_DATE'))
+        self.cf_tab_treeview = ttk.Treeview(self.af_treeview_frame, columns=('ADRESS', 'DATE', 'FINISH_DATE'))
 
         # Set the heading (Attribute Names)
-        self.treeview.heading('#0', text='BRIGADES NUM')
-        self.treeview.heading('#1', text='ADDRESE')
-        self.treeview.heading('#2', text='DATE_TO_END')
-        self.treeview.heading('#3', text='FINISH_DATE')
+        self.cf_tab_treeview.heading('#0', text='BRIGADES NUM')
+        self.cf_tab_treeview.heading('#1', text='ADDRESE')
+        self.cf_tab_treeview.heading('#2', text='DATE_TO_END')
+        self.cf_tab_treeview.heading('#3', text='FINISH_DATE')
 
         # Specify attributes of the columns (We want to stretch it!)
-        self.treeview.column('#0', stretch=tk.YES)
-        self.treeview.column('#1', stretch=tk.YES)
-        self.treeview.column('#2', stretch=tk.YES)
-        self.treeview.column('#3', stretch=tk.YES)
+        self.cf_tab_treeview.column('#0', stretch=tk.YES)
+        self.cf_tab_treeview.column('#1', stretch=tk.YES)
+        self.cf_tab_treeview.column('#2', stretch=tk.YES)
+        self.cf_tab_treeview.column('#3', stretch=tk.YES)
 
-        self.treeview.pack()
-        self.insert_data_into_treeview()
+        self.cf_tab_treeview.pack()
 
-    def insert_data_into_treeview(self):
-        # get data from db
-        conn = self.create_db_connection()
-        q1 = "SELECT *FROM objekts;"
-        results = self.read_query(conn, q1)
-        # Returns a list of lists
-        from_db = []
-        for result in results:
-            result = list(result)
-            from_db.append(result)
+        from_db = self.get_data_lists_from_db()
+        # inserting data into treeview
         for row in from_db:
             # example of  row
             # [6, 'aizdomu 34', datetime.date(2022, 11, 12), 2, 0, None, 0, None, 2]
@@ -385,8 +388,51 @@ class Test():
             todo_date = row[2]
             fin_date = row[5]
             brigade = row[8]
-            self.treeview.insert('', 'end', iid=obj_id, text=brigade,
-                                 values=(adress, str(todo_date), str(fin_date)))
+            self.cf_tab_treeview.insert('', 'end', iid=obj_id, text=brigade,
+                                        values=(adress, str(todo_date), str(fin_date)))
+
+    def get_data_lists_from_db(self):
+        """gets all data from mysql db makes from then list of list"""
+
+        # example of  outputing row
+        # [6, 'aizdomu 34', datetime.date(2022, 11, 12), 2, 0, None, 0, None, 2]
+
+        # get data from db
+        conn = self.create_db_connection()
+        q1 = "SELECT *FROM objekts;"
+        results = self.read_query(conn, q1)
+        # Returns a list of lists
+        from_db = []
+        for result in results:
+            result = list(result)
+            from_db.append(result)
+        return from_db
+
+    # worker tabs widgets and stuff
+
+    def place_input_frame_widgets(self, root):
+        """places label,entry, and btn widgets to input frame of workers tab"""
+
+        self.sub_frame_workers_input1 = tk.Frame(root)
+        # sub_frame.pack()
+        # label
+        self.wt_response_label = tk.Label(self.sub_frame_workers_input1, text="BRIGADES NUM", borderwidth=3,
+                                          width=40, height=2)
+        self.wt_response_label.pack()
+        # entry
+        self.wt_brigade_entry = tk.Entry(self.sub_frame_workers_input1, borderwidth=3, width=40)
+        self.wt_brigade_entry.pack(side="bottom")
+
+        self.sub_frame_workers_input1.pack(side="left")
+
+        # btn
+        self.wt_submit_btn = tk.Button(root, text='GET INFO OR UPDATE', bg="green", relief="groove",
+                                       command=self.printec,
+                                       width=40, height=2)
+        self.wt_submit_btn.pack(side="left")
+
+    def printec(self):
+        print("workers input buton")
 
 
 app = Test()
