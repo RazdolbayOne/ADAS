@@ -29,12 +29,14 @@ class Test():
         self.switch_btn_frame.pack()
         self.place_switch_buttons()
 
-        # main frame of create_frame
+        #  root frame of create_frame tab
         self.root_create_frame = tk.Frame(self.root)
         self.root_create_frame.pack()
+
         # frame what stores labels and entrys for object creation
         self.main_obj_data_input_frame = tk.Frame(self.root_create_frame)
         self.main_obj_data_input_frame.pack()
+
         # contains subframes of obj_data_input_frame
         self.cf_input_frames = []
         for i in range(INPUT_FIELD_COUNT):
@@ -49,8 +51,9 @@ class Test():
 
         self.place_cf_submit_btn()
         self.place_create_frame_response_lebel()
+
         # ======================================================
-        # accept frame part
+        # accept  tab/frame part
         # ======================================================
 
         # root Frame
@@ -59,19 +62,28 @@ class Test():
 
         # frame for treewiev
         self.af_treeview_frame = tk.Frame(self.root_accept_frame)
-        #TODO NEED TO FIGUR OUT HOW TO GET RID OF THIS NONSEN row
+        # TODO NEED TO FIGUR OUT HOW TO GET RID OF THIS NONSEN row
         # self.af_treeview_frame.pack()
         self.create_place_treeview()
 
-        #create frame for accept button and status lebel
-        self.af_accept_btn_and_status_label=tk.Frame(self.root_accept_frame)
+        # create frame for accept button and status lebel
+        self.af_accept_btn_and_status_label = tk.Frame(self.root_accept_frame)
         # TODO ALSO NEED TO FIGURE OUT HOW TO FIX row
         # self.af_accept_btn_and_status_label.pack()
-
         self.place_accept_frame_btn()
         self.place_accept_frame_response_lebel()
         self.place_update_treeview_btn()
 
+        # ========================================
+        # workers tab
+        # ========================================
+
+        # root frame
+        self.root_worker_tab = tk.Frame(self.root)
+        self.root_worker_tab.pack()
+
+        # frame where will be label entry and "Get info btn" about objects
+        self.worker_input_frame = tk.Frame(self.root_worker_tab)
 
     def quit(self):
         self.root.destroy()
@@ -81,14 +93,20 @@ class Test():
 
     def place_switch_buttons(self):
         self.btn_show_create_frame = tk.Button(self.switch_btn_frame, text='Ielikt jaunu obj', bg="blue",
-                                               command=self.show_create_frame_widgets,
+                                               command=self.show_create_tab_widgets,
                                                width=40, height=5)
         self.btn_show_create_frame.pack(side="left")
 
         self.btn_show_accept_frame = tk.Button(self.switch_btn_frame, text='Pienemt obj   ',
-                                               command=self.show_accept_frame_widgets, bg='white',
+                                               command=self.show_accept_tab_widgets, bg='white',
                                                width=50, height=5)
         self.btn_show_accept_frame.pack(side="left")
+
+        # darbinieka frame btn
+        self.btn_show_worker_frame = tk.Button(self.switch_btn_frame, text='Darbinieka forma', bg="white",
+                                               command=self.show_worker_tab_widgets,
+                                               width=40, height=5)
+        self.btn_show_worker_frame.pack(side="left")
 
     # All about create frame
     def create_cf_labels_and_entrys(self):
@@ -155,7 +173,7 @@ class Test():
         self.af_response_label.grid(column=1, row=2, padx=5, pady=5)
         self.widget_list_of_accept_frame.append(self.af_response_label)
 
-    def show_create_frame_widgets(self):
+    def show_create_tab_widgets(self):
         # hides create frame widgets
         self.root_accept_frame.pack_forget()
         # shows accept frame widgets
@@ -164,6 +182,7 @@ class Test():
         # changes collor
         self.btn_show_accept_frame.config(bg="white")
         self.btn_show_create_frame.config(bg='blue')
+        self.btn_show_worker_frame.config(bg="white")
 
     def insert_entrys_data_into_db(self):
         """creating frame button function what takes entrys data and
@@ -186,7 +205,7 @@ class Test():
             priority = 3
 
         # bigade_label
-        brigade = self.brigade_num_entryigade_entry.get()
+        brigade = self.brigade_num_entry.get()
         if type(brigade) == int:
             if brigade > 3 or brigade < 0:
                 brigade = 1
@@ -205,7 +224,7 @@ class Test():
         self.execute_query(conn, insert_data_query)
 
     # all about accept frame
-    def show_accept_frame_widgets(self):
+    def show_accept_tab_widgets(self):
         # hides create frame widgets
         self.root_create_frame.pack_forget()
         # shows accept frame widgets
@@ -217,23 +236,44 @@ class Test():
         # changes collor
         self.btn_show_accept_frame.config(bg="blue")
         self.btn_show_create_frame.config(bg='white')
+        self.btn_show_worker_frame.config(bg="white")
+
+    def show_worker_tab_widgets(self):
+        """hides other frames and show up worker frame widgets"""
+        # hides create frame widgets
+        self.root_create_frame.pack_forget()
+        # hide accept frame widgets
+        self.root_accept_frame.pack_forget()
+        # show root workers tab widgets
+        self.root_worker_tab.pack()
+
+        # TODO NEED TO FIX THIS KASTIL
+        self.af_treeview_frame.pack()
+        self.af_accept_btn_and_status_label.pack()
+
+        # changes collor
+        self.btn_show_accept_frame.config(bg="white")
+        self.btn_show_create_frame.config(bg='white')
+        self.btn_show_worker_frame.config(bg="orange")
 
     def place_accept_frame_btn(self):
-        accept_btn = tk.Button(self.af_accept_btn_and_status_label,bg="green", text='PIENEMT', command=self.accept_object,
-                                    width=40, height=5)
+        accept_btn = tk.Button(self.af_accept_btn_and_status_label, bg="green", text='PIENEMT',
+                               command=self.accept_object,
+                               width=40, height=5)
         accept_btn.pack(side="left")
-
 
     def place_update_treeview_btn(self):
         """btn to force update treeview to get new vals from db if appiered"""
-        update_treeview_btn = tk.Button(self.af_accept_btn_and_status_label,bg="pink", text='UPDATE DATA IN TABLE', command=self.update_treeview,
-                                             width=40, height=5)
+        update_treeview_btn = tk.Button(self.af_accept_btn_and_status_label, bg="pink", text='UPDATE DATA IN TABLE',
+                                        command=self.update_treeview,
+                                        width=40, height=5)
         update_treeview_btn.pack(side="left")
 
     def place_accept_frame_response_lebel(self):
         self.af_response_label = tk.Label(self.af_accept_btn_and_status_label, text="result msg", borderwidth=3,
                                           width=40, height=2)
         self.af_response_label.pack(side="left")
+
     # SQL stuff
     def create_db_connection(self):
         connection = None
