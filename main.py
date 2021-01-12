@@ -16,7 +16,8 @@ DB_USER = "root"
 DB_PASSWORD = "My3qlP@ssword"
 DB_DATABASE = "mydb"
 
-INPUT_FIELD_COUNT=5
+INPUT_FIELD_COUNT = 5
+
 
 class Test():
     def __init__(self):
@@ -24,76 +25,53 @@ class Test():
         self.root.geometry("800x400")
         self.root.title("ADAS")
 
-
-        self.switch_btn_frame=tk.Frame(self.root)
+        self.switch_btn_frame = tk.Frame(self.root)
         self.switch_btn_frame.pack()
         self.place_switch_buttons()
 
         # main frame of create_frame
-        self.root_create_frame=tk.Frame(self.root)
+        self.root_create_frame = tk.Frame(self.root)
         self.root_create_frame.pack()
-        #frame what stores labels and entrys for object creation
-        self.main_obj_data_input_frame=tk.Frame(self.root_create_frame)
+        # frame what stores labels and entrys for object creation
+        self.main_obj_data_input_frame = tk.Frame(self.root_create_frame)
         self.main_obj_data_input_frame.pack()
-        #contains subframes of obj_data_input_frame
-        self.cf_input_frames=[]
+        # contains subframes of obj_data_input_frame
+        self.cf_input_frames = []
         for i in range(INPUT_FIELD_COUNT):
-            input_frame=tk.Frame(self.main_obj_data_input_frame)
+            input_frame = tk.Frame(self.main_obj_data_input_frame)
             input_frame.pack()
             self.cf_input_frames.append(input_frame)
         self.create_cf_labels_and_entrys()
 
-        #frame what contains submit btn and status label
+        # frame what contains submit btn and status label
         self.submit_btn_status_label = tk.Frame(self.root_create_frame)
         self.submit_btn_status_label.pack()
 
         self.place_cf_submit_btn()
         self.place_create_frame_response_lebel()
-        #======================================================
-        #accept frame part
-        #======================================================
+        # ======================================================
+        # accept frame part
+        # ======================================================
 
-        #root Frame
+        # root Frame
         self.root_accept_frame = tk.Frame(self.root)
         self.root_accept_frame.pack()
 
-        #frame for treewiev
-        self.af_treeview_frame=tk.Frame(self.root_accept_frame)
-        #self.af_treeview_frame.pack()
-        self.create_place_treeview()
-        """
-        # create frame stuff
-        self.place_create_frame_labels()
-        self.place_create_frame_entrys()
-        self.place_create_frame_submit_btn()
-        self.place_create_frame_response_lebel()
-        # accept frame stuff
-        self.show_accept_frame_widgets()
+        # frame for treewiev
+        self.af_treeview_frame = tk.Frame(self.root_accept_frame)
+        #TODO NEED TO FIGUR OUT HOW TO GET RID OF THIS NONSEN row
+        # self.af_treeview_frame.pack()
         self.create_place_treeview()
 
-        self.af_frame=tk.Frame(self.root)
-        self.af_frame.grid(row=2)
+        #create frame for accept button and status lebel
+        self.af_accept_btn_and_status_label=tk.Frame(self.root_accept_frame)
+        # TODO ALSO NEED TO FIGURE OUT HOW TO FIX row
+        # self.af_accept_btn_and_status_label.pack()
+
         self.place_accept_frame_btn()
         self.place_accept_frame_response_lebel()
         self.place_update_treeview_btn()
-        """
-        """
-               self.place_switch_buttons()
-               # create frame stuff
-               self.place_create_frame_labels()
-               self.place_create_frame_entrys()
-               self.place_create_frame_submit_btn()
-               self.place_create_frame_response_lebel()
-               # accept frame stuff
-               self.show_accept_frame_widgets()
-               self.create_place_treeview()
 
-               self.af_frame=tk.Frame(self.root)
-               self.af_frame.grid(row=2)
-               self.place_accept_frame_btn()
-               self.place_accept_frame_response_lebel()
-               self.place_update_treeview_btn()
-               """
 
     def quit(self):
         self.root.destroy()
@@ -103,51 +81,55 @@ class Test():
 
     def place_switch_buttons(self):
         self.btn_show_create_frame = tk.Button(self.switch_btn_frame, text='Ielikt jaunu obj', bg="blue",
-                                          command=self.show_create_frame_widgets,
-                                          width=40, height=5)
+                                               command=self.show_create_frame_widgets,
+                                               width=40, height=5)
         self.btn_show_create_frame.pack(side="left")
 
         self.btn_show_accept_frame = tk.Button(self.switch_btn_frame, text='Pienemt obj   ',
-                                          command=self.show_accept_frame_widgets, bg='white',
-                                          width=50, height=5)
+                                               command=self.show_accept_frame_widgets, bg='white',
+                                               width=50, height=5)
         self.btn_show_accept_frame.pack(side="left")
 
     # All about create frame
     def create_cf_labels_and_entrys(self):
 
-        #adress label and entry
-        self.adress_label = tk.Label(self.cf_input_frames[0], text="ADRESE(STRING)", borderwidth=3, relief="sunken", width=40,
+        # adress label and entry
+        self.adress_label = tk.Label(self.cf_input_frames[0], text="ADRESE(STRING)", borderwidth=3, relief="sunken",
+                                     width=40,
                                      height=2)
         self.adress_label.pack(side="left")
 
         self.adress_entry = tk.Entry(self.cf_input_frames[0], borderwidth=3, width=40)
         self.adress_entry.pack(side="left")
 
-        #date to do the object
-        self.date_todo_label = tk.Label(self.cf_input_frames[1], text="KAD(YYYY-MM-DD)", borderwidth=3, relief="sunken", width=40,
+        # date to do the object
+        self.date_todo_label = tk.Label(self.cf_input_frames[1], text="KAD(YYYY-MM-DD)", borderwidth=3, relief="sunken",
+                                        width=40,
                                         height=2)
         self.date_todo_label.pack(side="left")
 
         self.date_todo_entry = tk.Entry(self.cf_input_frames[1], borderwidth=3, width=40)
         self.date_todo_entry.pack(side="left")
 
-        #priority label
-        self.priority_label = tk.Label(self.cf_input_frames[2], text="Pioritate(NUMBER)", borderwidth=3, relief="sunken", width=40,
+        # priority label
+        self.priority_label = tk.Label(self.cf_input_frames[2], text="Pioritate(NUMBER)", borderwidth=3,
+                                       relief="sunken", width=40,
                                        height=2)
         self.priority_label.pack(side="left")
-        
+
         self.priority_entry = tk.Entry(self.cf_input_frames[2], borderwidth=3, width=40)
         self.priority_entry.pack(side="left")
-        
-        #brigade
-        self.brigade_num_label = tk.Label(self.cf_input_frames[3], text="Brigade(NUMBER)", borderwidth=3, relief="sunken", width=40,
+
+        # brigade
+        self.brigade_num_label = tk.Label(self.cf_input_frames[3], text="Brigade(NUMBER)", borderwidth=3,
+                                          relief="sunken", width=40,
                                           height=2)
         self.brigade_num_label.pack(side="left")
 
         self.brigade_num_entry = tk.Entry(self.cf_input_frames[3], borderwidth=3, width=40)
         self.brigade_num_entry.pack(side="left")
-        
-        #comentary 
+
+        # comentary
         self.commentary_label = tk.Label(self.cf_input_frames[4], text="Komentars", borderwidth=3, relief="sunken",
                                          width=40, height=2)
         self.commentary_label.pack(side="left")
@@ -178,7 +160,6 @@ class Test():
         self.root_accept_frame.pack_forget()
         # shows accept frame widgets
         self.root_create_frame.pack()
-
 
         # changes collor
         self.btn_show_accept_frame.config(bg="white")
@@ -217,7 +198,8 @@ class Test():
         if not comment:
             comment = "NAV"
 
-        insert_data_query += "('" + adress + "','" + str(self.date_todo_entry.get()) + "'," + str(priority) + ",0,0," + str(
+        insert_data_query += "('" + adress + "','" + str(self.date_todo_entry.get()) + "'," + str(
+            priority) + ",0,0," + str(
             brigade) + ",'" + comment + "'); "
         print(insert_data_query)
         self.execute_query(conn, insert_data_query)
@@ -231,23 +213,28 @@ class Test():
 
         # TODO NEED TO FIX THIS KASTIL
         self.af_treeview_frame.pack()
+        self.af_accept_btn_and_status_label.pack()
         # changes collor
         self.btn_show_accept_frame.config(bg="blue")
         self.btn_show_create_frame.config(bg='white')
 
     def place_accept_frame_btn(self):
-        self.accept_btn = tk.Button(self.root, text='PIENEMT', command=self.accept_object,
+        accept_btn = tk.Button(self.af_accept_btn_and_status_label,bg="green", text='PIENEMT', command=self.accept_object,
                                     width=40, height=5)
-        self.accept_btn.grid(column=0, row=2)
-        self.widget_list_of_accept_frame.append(self.accept_btn)
+        accept_btn.pack(side="left")
+
 
     def place_update_treeview_btn(self):
         """btn to force update treeview to get new vals from db if appiered"""
-        self.update_treeview_btn = tk.Button(self.root, text='UPDATE', command=self.update_treeview,
-                                    width=40, height=5)
-        self.update_treeview_btn.grid(column=2, row=2)
+        update_treeview_btn = tk.Button(self.af_accept_btn_and_status_label,bg="pink", text='UPDATE DATA IN TABLE', command=self.update_treeview,
+                                             width=40, height=5)
+        update_treeview_btn.pack(side="left")
 
-     # SQL stuff
+    def place_accept_frame_response_lebel(self):
+        self.af_response_label = tk.Label(self.af_accept_btn_and_status_label, text="result msg", borderwidth=3,
+                                          width=40, height=2)
+        self.af_response_label.pack(side="left")
+    # SQL stuff
     def create_db_connection(self):
         connection = None
         try:
@@ -291,9 +278,11 @@ class Test():
         """deletes from Tree focused row also
         sends query to update focused row to change ACCEPTED to True
         """
-        row_id = self.tree.focus()
+        row_id = self.treeview.focus()
         # if not focused tree
-        if row_id == '': return None
+        if row_id == '':
+            self.af_response_label.config(text="<--Nope,click on needed row then on me!")
+            return None
 
         row_id = int(row_id)
         # delete it from tree
@@ -304,40 +293,34 @@ class Test():
         conn = self.create_db_connection()
         self.execute_query(conn, update_q)
 
-
     def update_treeview(self):
         self.clear_treeview()
         self.insert_data_into_treeview()
+        self.af_response_label.config(text="UPDATED TABLE!-->")
 
     def clear_treeview(self):
         for i in self.treeview.get_children():
             self.treeview.delete(i)
 
     def create_place_treeview(self):
+
         """creates tk.TreeWiev object and insert into it data from db objects """
-        self.tree = ttk.Treeview(self.af_treeview_frame, columns=('ADRESS', 'DATE', 'FINISH_DATE'))
+        self.treeview = ttk.Treeview(self.af_treeview_frame, columns=('ADRESS', 'DATE', 'FINISH_DATE'))
 
         # Set the heading (Attribute Names)
-        self.tree.heading('#0', text='BRIGADES NUM')
-        self.tree.heading('#1', text='ADDRESE')
-        self.tree.heading('#2', text='DATE_TO_END')
-        self.tree.heading('#3', text='FINISH_DATE')
+        self.treeview.heading('#0', text='BRIGADES NUM')
+        self.treeview.heading('#1', text='ADDRESE')
+        self.treeview.heading('#2', text='DATE_TO_END')
+        self.treeview.heading('#3', text='FINISH_DATE')
 
         # Specify attributes of the columns (We want to stretch it!)
-        self.tree.column('#0', stretch=tk.YES)
-        self.tree.column('#1', stretch=tk.YES)
-        self.tree.column('#2', stretch=tk.YES)
-        self.tree.column('#3', stretch=tk.YES)
+        self.treeview.column('#0', stretch=tk.YES)
+        self.treeview.column('#1', stretch=tk.YES)
+        self.treeview.column('#2', stretch=tk.YES)
+        self.treeview.column('#3', stretch=tk.YES)
 
-        self.tree.grid(row=4, columnspan=4, sticky='nsew')
-        self.treeview = self.tree
-
-        self.iid = 0
-        self.id = 0
-
+        self.treeview.pack()
         self.insert_data_into_treeview()
-
-
 
     def insert_data_into_treeview(self):
         # get data from db
@@ -364,8 +347,8 @@ class Test():
             brigade = row[8]
             self.treeview.insert('', 'end', iid=obj_id, text=brigade,
                                  values=(adress, str(todo_date), str(fin_date)))
-            self.iid = self.iid + 1
-            self.id = self.id + 1
+
+
 app = Test()
 
 app.mainloop()
