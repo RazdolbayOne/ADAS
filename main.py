@@ -314,6 +314,7 @@ class Test():
         return connection
 
     def read_query(self, connection, query):
+        if connection==None:return
         """get from db recordings """
         cursor = connection.cursor()
         result = None
@@ -484,6 +485,10 @@ class Test():
 
         # get data from db
         conn = self.create_db_connection()
+
+        #if db do not responds return
+        if conn is None:return
+
         q1 = "SELECT *FROM objekts;"
         results = self.read_query(conn, q1)
         # Returns a list of lists
